@@ -7,7 +7,7 @@ class Enemy extends GameObject{
     }
 
     createEnemyBullet(){
-        this.enemyBulletArray.push(new EnemyBullet(this.container, this ,"/shooting-game/images/plane/ball.png",this.x, this.y, 20, 20, 0, 30 ));
+        this.enemyBulletArray.push(new EnemyBullet(this.container, this ,"images/plane/ball.png",this.x, this.y, 20, 20, 0, 30 ));
     }
 
      //내가 혹여, 주인공의 총알에 맞아서 사라질때는 그냥 가면 안됨..청소하고감(내가 쏜 여러총알들도 함께 제거..)

@@ -10,9 +10,9 @@ class BigEnemy extends Enemy{
 
     //총알 생성
     createEnemyBullet(){
-        this.enemyBulletArray.push(new EnemyBullet(this.container, this ,"/shooting-game/images/plane/ball.png",this.x+200, this.y+200, 20, 20, 0, 5 ));
-        this.enemyBulletArray.push(new EnemyBullet(this.container, this ,"/shooting-game/images/plane/ball.png",this.x+400, this.y+200, 20, 20, 0, 5 ));
-        this.enemyBulletArray.push(new EnemyBullet(this.container, this ,"/shooting-game/images/plane/ball.png",this.x+600, this.y+200, 20, 20, 0, 5 ));
+        this.enemyBulletArray.push(new EnemyBullet(this.container, this ,"images/plane/ball.png",this.x+200, this.y+200, 20, 20, 0, 5 ));
+        this.enemyBulletArray.push(new EnemyBullet(this.container, this ,"images/plane/ball.png",this.x+400, this.y+200, 20, 20, 0, 5 ));
+        this.enemyBulletArray.push(new EnemyBullet(this.container, this ,"images/plane/ball.png",this.x+600, this.y+200, 20, 20, 0, 5 ));
     }
 
 

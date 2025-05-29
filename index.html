@@ -166,7 +166,7 @@
         ------------------------------------------------------------*/    
         function createHero(){
             let container = document.getElementById("stage");
-            let src = "/shooting-game/images/gun/plane.png";
+            let src = "images/gun/plane.png";
             hero = new Hero(container, src, 700,680,65,65,0,0);
         }
         
@@ -186,7 +186,7 @@
         ------------------------------------------------------------*/    
         function createEnergy(){
              let container = document.getElementById("stage");
-             let src = "/shooting-game/images/gun/heart.png";
+             let src = "images/gun/heart.png";
              addHpArray.push(new Energy(container,src, getRandom(1400), 100, 40, 40, 0, 10));
         }
 
@@ -197,7 +197,7 @@
             let container = document.getElementById("stage");
 
             let r = getRandom(4);
-            let enemy=new Enemy(container, `/shooting-game/images/plane/e${r+1}.png`, getRandom(1400), 10, 75, 75, 0,5);
+            let enemy=new Enemy(container, `images/plane/e${r+1}.png`, getRandom(1400), 10, 75, 75, 0,5);
             enemyArray.push(enemy); 
 
             //이 적군이 앞으로 사용할 총알 배열을 메인의 이차원 배열에 넣어두기 (레벨에 상관업음)
@@ -212,7 +212,7 @@
         function createBigEnemy(){
             let container = document.getElementById("stage");
 
-            bigEnemy = new BigEnemy(container,"/shooting-game/images/plane/e2.png", 370, 10, 800, 300, 5,0);
+            bigEnemy = new BigEnemy(container,"images/plane/e2.png", 370, 10, 800, 300, 5,0);
             
              //이 적군이 앞으로 사용할 총알 배열을 메인의 이차원 배열에 넣어두기 (레벨에 상관업음)
             if(level>=3){
@@ -227,7 +227,7 @@
         ------------------------------------------------------------*/    
         function createItem(item){
             let container = document.getElementById("stage");
-            let src = "/shooting-game/images/gun/item.png";
+            let src = "images/gun/item.png";
 
             addItem = new Item(container, src, getRandom(1400), 100, 30,30,0, 5, item);
 
@@ -241,7 +241,7 @@
         function fire(){
             //console.log("fire() called..");
             let container = document.getElementById("stage");
-            let src = "/shooting-game/images/plane/ball.png";
+            let src = "images/plane/ball.png";
 
             if(bullet == 1){
                 bulletArray.push(new HeroBullet(container, src, hero.x+50, hero.y+10, 20,20,0,-30));
