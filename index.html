@@ -244,14 +244,14 @@
             let src = "images/plane/ball.png";
 
             if(bullet == 1){
-                bulletArray.push(new HeroBullet(container, src, hero.x+50, hero.y+10, 20,20,0,-30));
+                bulletArray.push(new HeroBullet(container, src, hero.x+20, hero.y+2, 20,20,0,-30));
             } else if (bullet == 2) {
-                bulletArray.push(new HeroBullet(container, src, hero.x+85, hero.y+10, 20,20,0,-30));
-                bulletArray.push(new HeroBullet(container, src, hero.x+10, hero.y+10, 20,20,0,-30));
+                bulletArray.push(new HeroBullet(container, src, hero.x+60, hero.y+2, 20,20,0,-30));
+                bulletArray.push(new HeroBullet(container, src, hero.x-5, hero.y+2, 20,20,0,-30));
             } else if (bullet == 3) {
-                bulletArray.push(new HeroBullet(container, src, hero.x+85, hero.y+10, 20,20,0,-30));
-                bulletArray.push(new HeroBullet(container, src, hero.x+50, hero.y+10, 20,20,0,-30));
-                bulletArray.push(new HeroBullet(container, src, hero.x+10, hero.y+10, 20,20,0,-30));
+                bulletArray.push(new HeroBullet(container, src, hero.x+60, hero.y+2, 20,20,0,-30));
+                bulletArray.push(new HeroBullet(container, src, hero.x+20, hero.y+2, 20,20,0,-30));
+                bulletArray.push(new HeroBullet(container, src, hero.x+-20, hero.y+2, 20,20,0,-30));
 
             }
         }
@@ -296,7 +296,7 @@
             bgEffect();
 
             //적군은 불규칙한 패턴으로 등장해야 하므로, 생성에 대한 조건을 부여 
-            if(createCount%getRandomByRange(1,200)==0){
+            if(createCount%getRandomByRange(1,250)==0){
                 createEnemy();
             }
             //console.log(createCount);
@@ -315,7 +315,7 @@
                 enemyArray[i].tick();
                 enemyArray[i].render();
 
-                if(createCount%getRandomByRange(1, 200)==0){
+                if(createCount%getRandomByRange(1, 300)==0){
                     if(level>=2 && enemyArray[i]!=undefined)enemyArray[i].createEnemyBullet(); //두번째 레벨부터는 적군이 총알발사..
                 }
             }
