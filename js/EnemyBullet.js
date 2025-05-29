@@ -5,8 +5,6 @@ class EnemyBullet extends Bullet{
         this.owner=owner; //이 총알이 태어날때, 주인님인 적군의 정보를 has a 로 보유
     }
 
-   
-
     tick(){
         this.y += this.velY;
     }

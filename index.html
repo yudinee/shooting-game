@@ -36,8 +36,12 @@
         let energyCreated=0;
         let itemAppearence = 0; //아이템 출현 횟수를 결정짓는 변수
         let bigEnemyAppearence = 0; //대왕적군 출현 횟수를 결정짓는 변수
-        let bigEnemy;
+        let bigEnemy=null;
 
+        //각 적군 개인 마다, 총알을 여러발 발사하므로, 배열을 보유하고 있었으나 메인에서 제어하기로 하였으므로 
+        //모든 적군이보유할 배열을 메인의 이차원배열에서 관리하자 예) 적군이 3명 일 경우, 3층  호수(적군 스스로가 쏜 총알 수)
+        let allEnemyBulletArray=[];
+        let bigSt;
 
         /*------------------------------------------------------------
         적군 전멸 함수
@@ -54,50 +58,59 @@
         ------------------------------------------------------------*/    
         function checkOver(){
             if(hpArray.length == 0){
-                clearInterval(st);
-                new GameOver(document.getElementById("stage"),1500, 750, "black", 150, 700, "white", "GAME OVER" );
 
+
+                clearInterval(st);
+                
                 //적군 다 죽음
                 removeAll();
-            
+                
                 //hero죽음
                 document.getElementById("stage").removeChild(hero.img);
-
+                
                 //heart사라짐
                 for(let i=addHpArray.length-1; i>=0; i--) {
                     //removeObject(addHpArray, addHpArray[i]);
                     document.getElementById("stage").removeChild(addHpArray[i].img);
                     enemyArray.splice(i, 1);
-
+                    
                 }
-
+                
                 //hero가 쏜 총알 다 사라짐
                 for(let i=bulletArray.length-1; i>=0; i--) {
                     //removeObject(addHpArray, addHpArray[i]);
                     document.getElementById("stage").removeChild(bulletArray[i].img);
                     bulletArray.splice(i, 1);
-
+                    
                 }
-
+                
                 //적군 총알 다 사라짐 
                 // for(let i=enemyArray.enemyBulletArray.length-1; i>=0; i--){
-                //     document.getElementById("stage").removeChild(enemyArray.enemyBulletArray[i].img);
-                //     enemyArray.enemyBulletArray.splice(i,1);
-                // }
+                    //     document.getElementById("stage").removeChild(enemyArray.enemyBulletArray[i].img);
+                    //     enemyArray.enemyBulletArray.splice(i,1);
+                    // }
 
                 //대왕적군 사라짐
-                document.getElementById("stage").removeChild(bigEnemy.img);
-
-                //대왕적군총알 다 사라짐 (처음 생성된 3개는 남아있음)
-                for(let i=bigEnemy.enemyBulletArray.length-1; i>=0; i--){
-                    document.getElementById("stage").removeChild(bigEnemy.enemyBulletArray[i].img);
-                    bigEnemy.enemyBulletArray.splice(i,1);
+                if(bigEnemy !=null){
+                    document.getElementById("stage").removeChild(bigEnemy.img);
+                    
+                    //대왕 적군총알 다 사라짐 (처음 생성된 3개는 남아있음)
+                    for(let i=bigEnemy.enemyBulletArray.length-1; i>=0; i--){
+                        document.getElementById("stage").removeChild(bigEnemy.enemyBulletArray[i].img);
+                        bigEnemy.enemyBulletArray.splice(i,1);
+                    }
                 }
+
+                for(let i=0;i<stage.children.length;i++){
+                    stage.removeChild(stage.children[0]);
+                }                                
+
+                new GameOver(document.getElementById("stage"),1500, 750, "black", 150, 700, "white", "GAME OVER" );
             }
         }
-
-
-       /*------------------------------------------------------------
+        
+        
+        /*------------------------------------------------------------
         배경 움직이게
         ------------------------------------------------------------*/    
         function bgEffect(){
@@ -153,7 +166,7 @@
         ------------------------------------------------------------*/    
         function createHero(){
             let container = document.getElementById("stage");
-            let src = "../images/gun/plane.png";
+            let src = "/shooting-game/images/gun/plane.png";
             hero = new Hero(container, src, 700,680,65,65,0,0);
         }
         
@@ -173,7 +186,7 @@
         ------------------------------------------------------------*/    
         function createEnergy(){
              let container = document.getElementById("stage");
-             let src = "../images/gun/heart.png";
+             let src = "/shooting-game/images/gun/heart.png";
              addHpArray.push(new Energy(container,src, getRandom(1400), 100, 40, 40, 0, 10));
         }
 
@@ -184,7 +197,13 @@
             let container = document.getElementById("stage");
 
             let r = getRandom(4);
-            enemyArray.push(new Enemy(container, `../images/plane/e${r+1}.png`, getRandom(1400), 10, 75, 75, 0,5));
+            let enemy=new Enemy(container, `/shooting-game/images/plane/e${r+1}.png`, getRandom(1400), 10, 75, 75, 0,5);
+            enemyArray.push(enemy); 
+
+            //이 적군이 앞으로 사용할 총알 배열을 메인의 이차원 배열에 넣어두기 (레벨에 상관업음)
+            if(level>=2){
+                allEnemyBulletArray.push(enemy.enemyBulletArray);
+            }
         }
 
         /*------------------------------------------------------------
@@ -193,10 +212,13 @@
         function createBigEnemy(){
             let container = document.getElementById("stage");
 
-            bigEnemy = new BigEnemy(container,"../images/plane/e2.png", 370, 10, 800, 300, 5,0);
-
-
-                setInterval(() => bigEnemy.createEnemyBullet(), 2000);
+            bigEnemy = new BigEnemy(container,"/shooting-game/images/plane/e2.png", 370, 10, 800, 300, 5,0);
+            
+             //이 적군이 앞으로 사용할 총알 배열을 메인의 이차원 배열에 넣어두기 (레벨에 상관업음)
+            if(level>=3){
+                allEnemyBulletArray.push(bigEnemy.enemyBulletArray);
+            }
+            //bigSt=setInterval(() => bigEnemy.createEnemyBullet(), 2000);
             
         }
 
@@ -205,7 +227,7 @@
         ------------------------------------------------------------*/    
         function createItem(item){
             let container = document.getElementById("stage");
-            let src = "../images/gun/item.png";
+            let src = "/shooting-game/images/gun/item.png";
 
             addItem = new Item(container, src, getRandom(1400), 100, 30,30,0, 5, item);
 
@@ -219,7 +241,7 @@
         function fire(){
             //console.log("fire() called..");
             let container = document.getElementById("stage");
-            let src = "../images/plane/ball.png";
+            let src = "/shooting-game/images/plane/ball.png";
 
             if(bullet == 1){
                 bulletArray.push(new HeroBullet(container, src, hero.x+50, hero.y+10, 20,20,0,-30));
@@ -297,38 +319,47 @@
                     if(level>=2 && enemyArray[i]!=undefined)enemyArray[i].createEnemyBullet(); //두번째 레벨부터는 적군이 총알발사..
                 }
             }
-           
-            createCount++; //누구라도, interval 형식을 원하는 코드는 이 변수를 이용하면 된다.
-             
+            
+            //적군의 모든 총알을 대상으로 움직이기 
+            for(let i=0; i<allEnemyBulletArray.length;i++){ //각 적군이 자신의 일차원 배열을 담아두고 있는 건물 
+                for(let a=0;a<allEnemyBulletArray[i].length;a++){//각 적군이 발사한 총알 수만큼..
+                    allEnemyBulletArray[i][a].tick();
+                    allEnemyBulletArray[i][a].render();
+                }
+            }
 
-            //총알 움직이기
+            
+            
+            //주인공 총알 움직이기
             for(let i=0; i<bulletArray.length; i++){
                 bulletArray[i].tick();
                 bulletArray[i].render();
             }
-
+            
             //addHp움직이기
             for(let i=0; i<addHpArray.length; i++) {
                 addHpArray[i].tick();
                 addHpArray[i].render();
                 //console.log(addHpArray[i].x + addHpArray[i].y);
             }
-
+            
             //아이템 움직이기
             if(addItem){
-
+                
                 addItem.tick();
                 addItem.render();
             }
             checkOver();
-
+            
             //대왕적군 움직이기
-            if(bigEnemy){
+            if(bigEnemy!=null){
                 bigEnemy.tick();
                 bigEnemy.render();
+                if(createCount%50==0)bigEnemy.createEnemyBullet();
             }
             
-
+            createCount++; //누구라도, interval 형식을 원하는 코드는 이 변수를 이용하면 된다.
+            
 
         }
 
