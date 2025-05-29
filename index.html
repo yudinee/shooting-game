@@ -1,0 +1,385 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="./style.css">
+    <script src="./js/GameObject.js"></script>
+    <script src="./js/Hero.js"></script>
+    <script src="./js/Enemy.js"></script>
+    <script src="./js/Bullet.js"></script>
+    <script src="./js/HeroBullet.js"></script>
+    <script src="./js/EnemyBullet.js"></script>
+    <script src="./lib/common.js"></script>
+    <script src="./js/Hp.js"></script>
+    <script src="./js/GameOver.js"></script>
+    <script src="./js/Energy.js"></script>
+    <script src="./js/Item.js"></script>
+    <script src="./js/BigEnemy.js"></script>
+   
+
+    <script>
+        let hero;
+        let bgY = 0;
+        let st = null;
+        let enemyArray = [];
+        let bulletArray = [];
+        let total = 0;
+        let hpArray = [];
+        let addHpArray = [];
+        let speed = 50;
+        let level = 0;        
+        let addItem;
+        let bullet = 1;
+        let createCount=0;        
+        let energyLimit=10;
+        let energyCreated=0;
+        let itemAppearence = 0; //아이템 출현 횟수를 결정짓는 변수
+        let bigEnemyAppearence = 0; //대왕적군 출현 횟수를 결정짓는 변수
+        let bigEnemy;
+
+
+        /*------------------------------------------------------------
+        적군 전멸 함수
+        ------------------------------------------------------------*/    
+        function removeAll(){
+            for (let i = enemyArray.length - 1; i >= 0; i--) {
+                    document.getElementById("stage").removeChild(enemyArray[i].img);
+                    enemyArray.splice(i, 1);
+                }
+        }
+
+       /*------------------------------------------------------------
+        hp 떨어지면 gameover
+        ------------------------------------------------------------*/    
+        function checkOver(){
+            if(hpArray.length == 0){
+                clearInterval(st);
+                new GameOver(document.getElementById("stage"),1500, 750, "black", 150, 700, "white", "GAME OVER" );
+
+                //적군 다 죽음
+                removeAll();
+            
+                //hero죽음
+                document.getElementById("stage").removeChild(hero.img);
+
+                //heart사라짐
+                for(let i=addHpArray.length-1; i>=0; i--) {
+                    //removeObject(addHpArray, addHpArray[i]);
+                    document.getElementById("stage").removeChild(addHpArray[i].img);
+                    enemyArray.splice(i, 1);
+
+                }
+
+                //hero가 쏜 총알 다 사라짐
+                for(let i=bulletArray.length-1; i>=0; i--) {
+                    //removeObject(addHpArray, addHpArray[i]);
+                    document.getElementById("stage").removeChild(bulletArray[i].img);
+                    bulletArray.splice(i, 1);
+
+                }
+
+                //적군 총알 다 사라짐 
+                // for(let i=enemyArray.enemyBulletArray.length-1; i>=0; i--){
+                //     document.getElementById("stage").removeChild(enemyArray.enemyBulletArray[i].img);
+                //     enemyArray.enemyBulletArray.splice(i,1);
+                // }
+
+                //대왕적군 사라짐
+                document.getElementById("stage").removeChild(bigEnemy.img);
+
+                //대왕적군총알 다 사라짐 (처음 생성된 3개는 남아있음)
+                for(let i=bigEnemy.enemyBulletArray.length-1; i>=0; i--){
+                    document.getElementById("stage").removeChild(bigEnemy.enemyBulletArray[i].img);
+                    bigEnemy.enemyBulletArray.splice(i,1);
+                }
+            }
+        }
+
+
+       /*------------------------------------------------------------
+        배경 움직이게
+        ------------------------------------------------------------*/    
+        function bgEffect(){
+            let stage = document.getElementById("stage");
+            stage.style.backgroundPosition = `0px ${bgY++}px`;
+        }
+
+        /*------------------------------------------------------------
+        레벨 표시
+        ------------------------------------------------------------*/  
+        function levelUp(n){
+            level=n+1;
+            
+            if(level>3){
+                level=3;
+            }
+                
+            if(level == 3){
+                bigEnemyAppearence++
+                if(bigEnemyAppearence <= 1) {
+                    createBigEnemy(); 
+                    createItem(2);
+                }
+            }
+             else if(level == 2){
+                itemAppearence++
+                if(itemAppearence <= 1) createItem(1);
+            }
+
+            document.getElementById("level").innerText = "level " + level ;
+            //console.log("결과 레벨은 ",level);
+        }
+
+    
+    
+
+
+
+        
+        /*------------------------------------------------------------
+        점수 표시
+        ------------------------------------------------------------*/    
+        function setScore(n){
+            total += n;
+            document.getElementById("score").innerText = total;
+            levelUp(Math.floor( total/100));
+            
+            
+      }
+
+        /*------------------------------------------------------------
+        hero 등장
+        ------------------------------------------------------------*/    
+        function createHero(){
+            let container = document.getElementById("stage");
+            let src = "../images/gun/plane.png";
+            hero = new Hero(container, src, 700,680,65,65,0,0);
+        }
+        
+        /*------------------------------------------------------------
+        hp 표시
+        ------------------------------------------------------------*/    
+        function createHp(){
+            for(let i=0; i<5; i++){
+                let container = document.getElementById("stage");
+                hpArray.push(new Hp(container, 100+(i*45), 50, 40,20,"lightgreen","green"));
+               
+            }
+        }
+
+        /*------------------------------------------------------------
+        hp 증가 함수
+        ------------------------------------------------------------*/    
+        function createEnergy(){
+             let container = document.getElementById("stage");
+             let src = "../images/gun/heart.png";
+             addHpArray.push(new Energy(container,src, getRandom(1400), 100, 40, 40, 0, 10));
+        }
+
+       /*------------------------------------------------------------
+        적군 등장
+        ------------------------------------------------------------*/    
+        function createEnemy(){
+            let container = document.getElementById("stage");
+
+            let r = getRandom(4);
+            enemyArray.push(new Enemy(container, `../images/plane/e${r+1}.png`, getRandom(1400), 10, 75, 75, 0,5));
+        }
+
+        /*------------------------------------------------------------
+        대왕 적군 등장
+        ------------------------------------------------------------*/    
+        function createBigEnemy(){
+            let container = document.getElementById("stage");
+
+            bigEnemy = new BigEnemy(container,"../images/plane/e2.png", 370, 10, 800, 300, 5,0);
+
+
+                setInterval(() => bigEnemy.createEnemyBullet(), 2000);
+            
+        }
+
+        /*------------------------------------------------------------
+        아이템 등장
+        ------------------------------------------------------------*/    
+        function createItem(item){
+            let container = document.getElementById("stage");
+            let src = "../images/gun/item.png";
+
+            addItem = new Item(container, src, getRandom(1400), 100, 30,30,0, 5, item);
+
+            //console.log(addItem);
+        }
+
+
+        /*------------------------------------------------------------
+        총알 등장
+        ------------------------------------------------------------*/    
+        function fire(){
+            //console.log("fire() called..");
+            let container = document.getElementById("stage");
+            let src = "../images/plane/ball.png";
+
+            if(bullet == 1){
+                bulletArray.push(new HeroBullet(container, src, hero.x+50, hero.y+10, 20,20,0,-30));
+            } else if (bullet == 2) {
+                bulletArray.push(new HeroBullet(container, src, hero.x+85, hero.y+10, 20,20,0,-30));
+                bulletArray.push(new HeroBullet(container, src, hero.x+10, hero.y+10, 20,20,0,-30));
+            } else if (bullet == 3) {
+                bulletArray.push(new HeroBullet(container, src, hero.x+85, hero.y+10, 20,20,0,-30));
+                bulletArray.push(new HeroBullet(container, src, hero.x+50, hero.y+10, 20,20,0,-30));
+                bulletArray.push(new HeroBullet(container, src, hero.x+10, hero.y+10, 20,20,0,-30));
+
+            }
+        }
+
+
+        /*------------------------------------------------------------
+        키보드 이벤트
+        ------------------------------------------------------------*/    
+        function handleMove(e){
+            //console.log(e.keyCode);
+
+            switch(e.keyCode){
+                case 27: setLoop(); break; //esc
+                case 37: hero.velX = -20; break; //좌
+                case 39: hero.velX = 20; break; //우
+                case 38: hero.velY = -20; break; //위
+                case 40: hero.velY = 20; break; //아래
+                case 32: fire(); break; //space
+            }
+        }
+
+
+        /*------------------------------------------------------------
+        키보드 이벤트
+        ------------------------------------------------------------*/  
+          function handleStop(e){
+           
+            switch(e.keyCode){
+                
+                case 37: hero.velX = 0; break; //좌
+                case 39: hero.velX = 0; break; //우
+                case 38: hero.velY = 0; break; //위
+                case 40: hero.velY = 0; break; //아래
+               
+            }
+        }
+
+        /*------------------------------------------------------------
+        게임 루프
+        ------------------------------------------------------------*/    
+        function gameLoop(){
+            bgEffect();
+
+            //적군은 불규칙한 패턴으로 등장해야 하므로, 생성에 대한 조건을 부여 
+            if(createCount%getRandomByRange(1,200)==0){
+                createEnemy();
+            }
+            //console.log(createCount);
+            
+            //에너지 주입
+            if(createCount%getRandomByRange(1, 500)==0){
+                createEnergy();
+            }
+            
+            //hero움직이기
+            hero.tick();
+            hero.render();
+            
+            //적군 움직이기
+            for(let i=0; i<enemyArray.length; i++){
+                enemyArray[i].tick();
+                enemyArray[i].render();
+
+                if(createCount%getRandomByRange(1, 200)==0){
+                    if(level>=2 && enemyArray[i]!=undefined)enemyArray[i].createEnemyBullet(); //두번째 레벨부터는 적군이 총알발사..
+                }
+            }
+           
+            createCount++; //누구라도, interval 형식을 원하는 코드는 이 변수를 이용하면 된다.
+             
+
+            //총알 움직이기
+            for(let i=0; i<bulletArray.length; i++){
+                bulletArray[i].tick();
+                bulletArray[i].render();
+            }
+
+            //addHp움직이기
+            for(let i=0; i<addHpArray.length; i++) {
+                addHpArray[i].tick();
+                addHpArray[i].render();
+                //console.log(addHpArray[i].x + addHpArray[i].y);
+            }
+
+            //아이템 움직이기
+            if(addItem){
+
+                addItem.tick();
+                addItem.render();
+            }
+            checkOver();
+
+            //대왕적군 움직이기
+            if(bigEnemy){
+                bigEnemy.tick();
+                bigEnemy.render();
+            }
+            
+
+
+        }
+
+        /*------------------------------------------------------------
+        게임 중지 & 재개 컨트롤
+        ------------------------------------------------------------*/    
+        function setLoop(){
+            if(st == null){
+                st = setInterval(gameLoop, speed);
+                
+            } else{
+                clearInterval(st);
+                st = null;
+            }
+        }
+
+
+        function init(){
+           createHero();
+           setScore(0); 
+           levelUp(0);   
+           createHp();   
+
+           
+           //createBigEnemy();
+           
+           
+
+           addEventListener("keydown", function(e){
+                handleMove(e);
+           });
+
+           addEventListener("keyup", function(e){
+                handleStop(e);
+           });
+
+        }
+
+        addEventListener("load", function(){
+           
+           init();
+        });
+    </script>
+</head>
+<body>
+    <div id="stage">
+        <div id="score"></div>
+        <div id="level"></div>
+    </div>
+
+    
+  
+</body>
+</html>

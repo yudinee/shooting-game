@@ -1,0 +1,41 @@
+body{
+    margin: 0;
+}
+
+#stage{
+    position: relative;
+    width: 1500px;
+    height: 750px;
+    background-image: url(../../images/gun/galaxy2.jpg);
+    overflow: hidden;
+     margin: 0 auto;
+}
+
+ #score{
+        position: absolute;
+        left: 50px;
+        top: 45px;
+        color: yellow;
+        font-weight: bold;
+        font-size: 27px;
+        width: 100px;
+        height: 40px;
+        line-height: 40px;
+         display: inline-block;
+        }
+
+#level{
+        position: absolute;
+        left: 1300px;
+        top: 45px;
+        color: yellow;
+        font-weight: bold;
+        font-size: 50px;
+        width: 100px;
+        height: 40px;
+        line-height: 40px;
+         display: inline-block;
+         white-space: nowrap; /*줄 바꿈 방지*/
+        }
+
+
