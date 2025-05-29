@@ -6,7 +6,7 @@ body{
     position: relative;
     width: 1500px;
     height: 750px;
-    background-image: url(/shooting-game/images/gun/galaxy2.jpg);
+    background-image: url(images/gun/galaxy2.jpg);
     overflow: hidden;
      margin: 0 auto;
 }
