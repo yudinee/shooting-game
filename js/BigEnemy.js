@@ -23,12 +23,14 @@ class BigEnemy extends Enemy{
         this.x += this.velX; //위치 업데이트
     }
 
+    //총알 박사 tick, render
     render(){
         for(let i=0; i<this.enemyBulletArray.length; i++) {
             this.enemyBulletArray[i].tick();
             this.enemyBulletArray[i].render();
         }
 
+        //총알, 주인공 충돌 체크
         if(collisionCheck(this.img, hero.img)){
             
             hero.minusAllEnergy();

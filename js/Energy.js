@@ -22,13 +22,10 @@ class Energy extends GameObject{
                    
             //addHp, hero 충돌 시 hp 갯수 7개까지
             if(hpArray.length  < 7) {
-                 hpArray.push(new Hp(this.container, 100+(hpArray.length*45), 50, 40,20,"lightgreen","green"));
-
-            }
-            
+                 hpArray.push(new Hp(this.container, 130+(hpArray.length*45), 50, 40,20,"lightgreen","green"));
+            } 
             //addHp지움
-            this.removeObject(addHpArray, this);
-           
+            this.removeObject(addHpArray, this);         
         }
 
         if(this.y >= 700){

@@ -10,7 +10,7 @@ class EnemyBullet extends Bullet{
     }
 
     render(){
-        //주인과의 충돌 시, 처리 후 점수 처리 
+        //주인공과의 충돌 시, 처리 후 점수 처리 
         if(collisionCheck(this.img, hero.img)){
             this.removeObject(this.owner.enemyBulletArray, this);//나죽고
             hero.minusEnergy();//주인공 에너지 삭감처리
